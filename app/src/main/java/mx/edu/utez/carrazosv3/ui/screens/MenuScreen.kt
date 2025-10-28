@@ -86,9 +86,9 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
 @Composable
 fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
     val autos = listOf(
-        Carro("Mazda 3 2016 2.5", "Excelente estado, transmisión automática, 60,000 km.", 158000.00, R.drawable.pnn),
-        Carro("Toyota Corolla 2019", "Único dueño, motor eficiente, interiores de lujo.", 225000.00, R.drawable.corrolla),
-        Carro("Honda Civic 2020", "Versión sport, todo eléctrico, poco uso.", 240000.00, R.drawable.civic)
+        Carro("Mazda 3 2016 2.5", "Excelente estado, transmisión automática, 70,000 km, unico duelo, factura original.", 158900.00, R.drawable.pnn),
+        Carro("Toyota Corolla 2019", "Único dueño, motor eficiente, interiores de lujo, excelente estado.", 235000.00, R.drawable.corrolla),
+        Carro("Honda Civic 2020", "Versión sport, todo eléctrico, poco uso, A/C, encendido de boton.", 245000.00, R.drawable.civic)
     )
 
     Scaffold(
