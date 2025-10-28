@@ -38,7 +38,7 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
 
-            // Imagen clickeable (abre la vista de detalles o "ver más")
+            // Imagen clickeable
             Image(
                 painter = painterResource(id = carro.imagen),
                 contentDescription = carro.nombre,
@@ -46,7 +46,7 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
                     .fillMaxWidth()
                     .height(180.dp)
                     .background(Color.DarkGray, RoundedCornerShape(8.dp))
-                    .clickable { viewModel.goToUserList(navController) }, // Igual que el botón "ver más"
+                    .clickable { navController.navigate("productDetail") },
                 contentScale = ContentScale.Crop
             )
 
@@ -78,7 +78,6 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Botones
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -90,9 +89,8 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
                     Text("Comprar", color = Color.Black)
                 }
 
-                // Botón cambiado a "Añadir al carrito"
                 Button(
-                    onClick = { viewModel.addToCart(carro) }, // Puedes crear este método en el ViewModel
+                    onClick = { /* Añadir al carrito */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
                     Text("Añadir al carrito", color = Color.Black)
