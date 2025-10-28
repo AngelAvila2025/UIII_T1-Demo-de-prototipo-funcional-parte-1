@@ -35,7 +35,7 @@ fun CalculatorScreen(viewModel: CalculatorViewModel, navController: NavControlle
     ) {
         Title("Bienvenido a la calculadora")
 
-        Label("Ingrese 2 números y posteriormente un operador")
+        Label("Ingrese 2 numeros y posteriormente un operador")
 
         NumberInputField("Número 1", viewModel.numero1)
         NumberInputField("Número 1", viewModel.numero2)
