@@ -60,7 +60,11 @@ fun AutoCard(carro: Carro, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = carro.descripcion, color = Color.White, fontSize = 14.sp)
             }
-            Text(text = "$$${'$'}{carro.precio}", color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                text = "$${carro.precio}",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -74,13 +78,93 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
         Carro("Mazda 3 2016 2.5", "Descripcion...", 12.34)
     )
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
             .padding(8.dp)
     ) {
-        // ✅ Botón para regresar
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 70.dp) // deja espacio para el botón inferior
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF89B9F8))
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .background(Color.White, RoundedCornerShape(8.dp))
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "Cart",
+                    color = Color.Black,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Subtotal", color = Color.White, fontSize = 18.sp)
+                Text(
+                    "$123.45",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+                    viewModel.goToCalculator(navController)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2F7AF8))
+            ) {
+                Text("Proceder al pago (1 artículo)", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .border(1.dp, Color.White)
+                )
+                Text("  Añadir a la compra", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(autos) { carro ->
+                    AutoCard(carro) {
+                        viewModel.goToUserList(navController)
+                    }
+                }
+            }
+        }
+
+        // 🔻 Botón rojo fijo al fondo
         Button(
             onClick = {
                 navController.navigate("login") {
@@ -88,100 +172,12 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
                 }
             },
             modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(45.dp),
+                .height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
         ) {
             Text("Regresar al Login", color = Color.White)
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF89B9F8))
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .background(Color.White, RoundedCornerShape(8.dp))
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = "Cart",
-                color = Color.Black,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(18.dp)
-                    .background(Color.Red, RoundedCornerShape(4.dp))
-            )
-            Text("  Delivery to William - Beverly Hills 90210  ", color = Color.White)
-            Box(
-                modifier = Modifier
-                    .size(18.dp)
-                    .background(Color.Gray, RoundedCornerShape(4.dp))
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Subtotal", color = Color.White, fontSize = 18.sp)
-            Text("$123.45", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        //direccion de button
-        Button(
-            onClick = {
-                viewModel.goToCalculator(navController)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2F7AF8))
-        ) {
-            Text("Proceder al pago (1 artículo)", color = Color.White)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier
-                    .size(16.dp)
-                    .border(1.dp, Color.White)
-            )
-            Text("  Añadir a la compra", color = Color.White)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(autos) { carro ->
-                AutoCard(carro) {
-                    viewModel.goToUserList(navController)
-                }
-            }
         }
     }
 }
