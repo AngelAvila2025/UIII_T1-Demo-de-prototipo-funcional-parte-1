@@ -42,7 +42,7 @@ fun LoginScreen(viewModel: LoginViewModel, navController: NavController) {
         }
 
         Text("CARRAZOS", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-        Text("¡Bienvenido, usuario!", color = Color(0xFFB0B0B0), fontSize = 18.sp)
+        Text("¡Bienvenido!", color = Color(0xFFB0B0B0), fontSize = 18.sp)
         Spacer(modifier = Modifier.height(20.dp))
 
         UserInputField(viewModel = viewModel, label = "Usuario")
@@ -62,7 +62,7 @@ fun LoginScreen(viewModel: LoginViewModel, navController: NavController) {
             }
         }
 
-        Link("¿No tienes cuenta? Regístrate") { navController.navigate("register") }
+        Link("¿No tienes cuenta aun? Regístrate") { navController.navigate("register") }
 
         Spacer(modifier = Modifier.height(40.dp))
         Text("Conduce tu futuro con Carrazos 🚗", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Light)
