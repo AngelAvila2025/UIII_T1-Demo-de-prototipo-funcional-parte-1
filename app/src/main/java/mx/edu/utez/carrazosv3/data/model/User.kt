@@ -11,6 +11,3 @@ data class User(
     val telefono: String,
     val sexo: Int
 )
-
-//No es necesario hacer constructores
-//getters ni setters

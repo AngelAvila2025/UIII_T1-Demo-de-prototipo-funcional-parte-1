@@ -1,6 +1,6 @@
 package mx.edu.utez.carrazosv3.ui.screens
 
-import PrimaryButton
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +13,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import mx.edu.utez.carrazosv3.ui.components.buttons.PrimaryButton
 
 @Composable
 fun RegisterScreen(navController: NavController) {

@@ -2,14 +2,11 @@ package mx.edu.utez.carrazosv3.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -17,32 +14,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import mx.edu.utez.carrazosv3.R
-import mx.edu.utez.carrazosv3.data.model.Carro
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+import mx.edu.utez.carrazosv3.viewmodel.MenuViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailScreen(navController: NavController) {
-    val carroEjemplo = Carro(
-        "Mazda 3 2016 2.5",
-        "Excelente estado, transmisión automática, 60,000 km. Ideal para ciudad y carretera.",
-        158000.00,
-        R.drawable.polluelo
-    )
-
-    val similares = listOf(
-        Carro("Toyota Corolla 2019", "Motor eficiente, interiores de lujo.", 225000.00, R.drawable.polluelo),
-        Carro("Honda Civic 2020", "Versión sport, poco uso.", 240000.00, R.drawable.polluelo),
-        Carro("Nissan Sentra 2018", "Buen rendimiento, único dueño.", 175000.00, R.drawable.polluelo)
-    )
+fun ProductDetailScreen(navController: NavController, backStackEntry: NavBackStackEntry, viewModel: MenuViewModel) {
+    val nombre = URLDecoder.decode(backStackEntry.arguments?.getString("nombre") ?: "", StandardCharsets.UTF_8.toString())
+    val descripcion = URLDecoder.decode(backStackEntry.arguments?.getString("descripcion") ?: "", StandardCharsets.UTF_8.toString())
+    val precio = backStackEntry.arguments?.getString("precio")?.toDoubleOrNull() ?: 0.0
+    val imagen = backStackEntry.arguments?.getString("imagen")?.toIntOrNull() ?: 0
 
     Scaffold(
         containerColor = Color.Black,
         topBar = {
             TopAppBar(
-                title = { Text("Detalles del Producto", color = Color.White) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
+                title = { Text(nombre, color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.Home, contentDescription = "Volver", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray)
             )
         }
     ) { padding ->
@@ -52,107 +48,31 @@ fun ProductDetailScreen(navController: NavController) {
                 .background(Color.Black)
                 .padding(padding)
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Image(
-                painter = painterResource(id = carroEjemplo.imagen),
-                contentDescription = carroEjemplo.nombre,
+                painter = painterResource(id = imagen),
+                contentDescription = nombre,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
-                    .background(Color.DarkGray, RoundedCornerShape(10.dp))
-                    .padding(8.dp),
-                contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Text(nombre, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text(descripcion, color = Color.LightGray, fontSize = 16.sp)
+            Text("Precio: $${precio}", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
-            Text(
-                text = carroEjemplo.nombre,
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = carroEjemplo.descripcion,
-                color = Color(0xFFB0B0B0),
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = "$${carroEjemplo.precio}",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 26.sp
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Button(
+                onClick = {
+                    viewModel.addToCart(
+                        mx.edu.utez.carrazosv3.data.model.Carro(nombre, descripcion, precio, imagen)
+                    )
+                    navController.navigate("cart")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
-                Button(
-                    onClick = { /* Comprar ahora */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text("Comprar ahora", color = Color.Black)
-                }
-
-                Button(
-                    onClick = { /* Añadir al carrito */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text("Añadir al carrito", color = Color.Black)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Productos similares",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(similares) { similar ->
-                    Card(
-                        modifier = Modifier
-                            .width(180.dp)
-                            .clickable { /* Navegar a otro detalle */ },
-                        colors = CardDefaults.cardColors(containerColor = Color.Black),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = CardDefaults.cardElevation(6.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Image(
-                                painter = painterResource(id = similar.imagen),
-                                contentDescription = similar.nombre,
-                                modifier = Modifier
-                                    .height(100.dp)
-                                    .fillMaxWidth()
-                                    .background(Color.DarkGray, RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(similar.nombre, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                            Text("$${similar.precio}", color = Color(0xFFB0B0B0), fontSize = 12.sp)
-                        }
-                    }
-                }
+                Text("Añadir al carrito", color = Color.Black)
             }
         }
     }

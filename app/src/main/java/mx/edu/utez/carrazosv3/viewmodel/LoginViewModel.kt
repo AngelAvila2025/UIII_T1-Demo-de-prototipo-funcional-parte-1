@@ -1,12 +1,10 @@
-package mx.edu.utez.gato.viewmodel
-
+package mx.edu.utez.carrazosv3.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-
 class LoginViewModel : ViewModel() {
-    var password = mutableStateOf("")
     var username = mutableStateOf("")
+    var password = mutableStateOf("")
     var loginError = mutableStateOf("")
 
     fun login(onSuccess: () -> Unit) {

@@ -13,7 +13,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -22,9 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import mx.edu.utez.carrazosv3.viewmodel.MenuViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import mx.edu.utez.carrazosv3.R
 import mx.edu.utez.carrazosv3.data.model.Carro
+import mx.edu.utez.carrazosv3.viewmodel.MenuViewModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavController) {
@@ -37,51 +40,28 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-
-            // Imagen clickeable
             Image(
                 painter = painterResource(id = carro.imagen),
                 contentDescription = carro.nombre,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .background(Color.DarkGray, RoundedCornerShape(8.dp))
-                    .clickable { navController.navigate("productDetail") },
+                    .clickable {
+                        val nombre = URLEncoder.encode(carro.nombre, StandardCharsets.UTF_8.toString())
+                        val desc = URLEncoder.encode(carro.descripcion, StandardCharsets.UTF_8.toString())
+                        navController.navigate("productDetail/$nombre/$desc/${carro.precio}/${carro.imagen}")
+                    },
                 contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = carro.nombre,
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = carro.descripcion,
-                color = Color(0xFFB0B0B0),
-                fontSize = 14.sp
-            )
-
+            Text(carro.nombre, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(carro.descripcion, color = Color.LightGray, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "$${carro.precio}",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
+            Text("$${carro.precio}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
             Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(
                     onClick = { viewModel.goToCalculator(navController) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White)
@@ -90,7 +70,10 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
                 }
 
                 Button(
-                    onClick = { /* Añadir al carrito */ },
+                    onClick = {
+                        viewModel.addToCart(carro)
+                        navController.navigate("cart")
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
                     Text("Añadir al carrito", color = Color.Black)
@@ -131,11 +114,7 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
             }
 
             items(autos) { carro ->
-                AutoCard(
-                    carro = carro,
-                    viewModel = viewModel,
-                    navController = navController
-                )
+                AutoCard(carro = carro, viewModel = viewModel, navController = navController)
             }
         }
     }
@@ -143,21 +122,35 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
 
 @Composable
 fun BottomNavBar(navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     NavigationBar(containerColor = Color.Black) {
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute?.startsWith("home") == true,
             onClick = { navController.navigate("home") },
-            icon = { Icon(Icons.Default.Home, contentDescription = "Inicio", tint = Color.White) }
+            icon = {
+                Icon(Icons.Default.Home, contentDescription = "Inicio",
+                    tint = if (currentRoute?.startsWith("home") == true) Color.White else Color.Gray)
+            }
         )
+
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute?.startsWith("user") == true,
             onClick = { navController.navigate("user") },
-            icon = { Icon(Icons.Default.Person, contentDescription = "Usuario", tint = Color.White) }
+            icon = {
+                Icon(Icons.Default.Person, contentDescription = "Usuario",
+                    tint = if (currentRoute?.startsWith("user") == true) Color.White else Color.Gray)
+            }
         )
+
         NavigationBarItem(
-            selected = true,
+            selected = currentRoute?.startsWith("cart") == true,
             onClick = { navController.navigate("cart") },
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = Color.White) }
+            icon = {
+                Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito",
+                    tint = if (currentRoute?.startsWith("cart") == true) Color.White else Color.Gray)
+            }
         )
     }
 }
