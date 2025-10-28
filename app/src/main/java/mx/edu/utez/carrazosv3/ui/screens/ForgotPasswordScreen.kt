@@ -22,14 +22,14 @@ fun ForgotPasswordScreen(navController: NavController) {
     val infoState = remember { mutableStateOf("") }
     val loadingState = remember { mutableStateOf(false) }
 
-    // Fondo gris claro
+    // fondo gris claro
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5)),
         contentAlignment = Alignment.Center
     ) {
-        // Tarjeta centrada
+        // tarjeta centrada
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
