@@ -147,6 +147,7 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        //direccion de button
         Button(
             onClick = {
                 viewModel.goToCalculator(navController)
