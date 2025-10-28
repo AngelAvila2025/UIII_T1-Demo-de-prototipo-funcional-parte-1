@@ -5,13 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,11 +26,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import mx.edu.utez.carrazosv3.R
 import mx.edu.utez.carrazosv3.data.model.Carro
 import mx.edu.utez.carrazosv3.viewmodel.MenuViewModel
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @Composable
-fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavController) {
+fun AutoCard(carro: Carro, index: Int, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,6 +38,7 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
+            // Imagen clickable
             Image(
                 painter = painterResource(id = carro.imagen),
                 contentDescription = carro.nombre,
@@ -47,49 +46,23 @@ fun AutoCard(carro: Carro, viewModel: MenuViewModel, navController: NavControlle
                     .fillMaxWidth()
                     .height(180.dp)
                     .clickable {
-                        val nombre = URLEncoder.encode(carro.nombre, StandardCharsets.UTF_8.toString())
-                        val desc = URLEncoder.encode(carro.descripcion, StandardCharsets.UTF_8.toString())
-                        navController.navigate("productDetail/$nombre/$desc/${carro.precio}/${carro.imagen}")
+                        navController.navigate("productDetail/$index")
                     },
                 contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(carro.nombre, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Text(carro.descripcion, color = Color.LightGray, fontSize = 14.sp)
+            Text(carro.descripcion.take(60) + "...", color = Color.LightGray, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(8.dp))
             Text("$${carro.precio}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Button(
-                    onClick = { viewModel.goToCalculator(navController) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text("Comprar", color = Color.Black)
-                }
-
-                Button(
-                    onClick = {
-                        viewModel.addToCart(carro)
-                        navController.navigate("cart")
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-                ) {
-                    Text("Añadir al carrito", color = Color.Black)
-                }
-            }
         }
     }
 }
 
 @Composable
 fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
-    val autos = listOf(
-        Carro("Mazda 3 2016 2.5", "Excelente estado, transmisión automática, 70,000 km, unico duelo, factura original.", 158900.00, R.drawable.pnn),
-        Carro("Toyota Corolla 2019", "Único dueño, motor eficiente, interiores de lujo, excelente estado.", 235000.00, R.drawable.corrolla),
-        Carro("Honda Civic 2020", "Versión sport, todo eléctrico, poco uso, A/C, encendido de boton.", 245000.00, R.drawable.civic)
-    )
+    val autos = viewModel.carList
 
     Scaffold(
         bottomBar = { BottomNavBar(navController) },
@@ -104,17 +77,24 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Text(
-                    text = "Explora los mejores autos 🚗",
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    Text(
+                        text = "Bienvenido a Carrazos 🚗💨",
+                        color = Color.White,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Explora los mejores autos y descubre modelos únicos.",
+                        color = Color.LightGray,
+                        fontSize = 16.sp
+                    )
+                }
             }
 
-            items(autos) { carro ->
-                AutoCard(carro = carro, viewModel = viewModel, navController = navController)
+            itemsIndexed(autos) { index, carro ->
+                AutoCard(carro = carro, index = index, navController = navController)
             }
         }
     }
