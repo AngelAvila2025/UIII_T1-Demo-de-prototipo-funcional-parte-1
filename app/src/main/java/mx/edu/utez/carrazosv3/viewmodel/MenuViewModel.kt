@@ -10,9 +10,9 @@ class MenuViewModel : ViewModel() {
 
     // Lista de autos
     val carList = listOf(
-        Carro("Mazda 3 2016 2.5", "Excelente estado, transmisión automática, 70,000 km, único dueño, factura original.", 158900.00, R.drawable.pnn),
-        Carro("Toyota Corolla 2019", "Único dueño, motor eficiente, interiores de lujo, excelente estado.", 235000.00, R.drawable.corrolla),
-        Carro("Honda Civic 2020", "Versión sport, todo eléctrico, poco uso, A/C, encendido de botón.", 245000.00, R.drawable.civic)
+        Carro(1,"Mazda 3 2016 2.5", "Excelente estado, transmisión automática, 70,000 km, único dueño, factura original.", 158900.00, R.drawable.pnn),
+        Carro(2,"Toyota Corolla 2019", "Único dueño, motor eficiente, interiores de lujo, excelente estado.", 235000.00, R.drawable.corrolla),
+        Carro(3,"Honda Civic 2020", "Versión sport, todo eléctrico, poco uso, A/C, encendido de botón.", 245000.00, R.drawable.civic)
     )
 
     fun addToCart(carro: Carro) {

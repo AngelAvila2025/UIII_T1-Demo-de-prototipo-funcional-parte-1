@@ -49,6 +49,12 @@ dependencies {
     // ===== Compose BOM (controla versiones internas automáticamente) =====
     implementation(platform("androidx.compose:compose-bom:2024.10.00"))
 
+    //insercion de implementaciones para la tarea 6
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.11")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+
     // ===== Componentes principales de Jetpack Compose =====
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
