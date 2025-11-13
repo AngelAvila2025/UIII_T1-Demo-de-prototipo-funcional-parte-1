@@ -12,8 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -27,8 +31,9 @@ import mx.edu.utez.carrazosv3.R
 import mx.edu.utez.carrazosv3.data.model.Carro
 import mx.edu.utez.carrazosv3.viewmodel.MenuViewModel
 
+// -----------------------------------------------------------------------------------
 @Composable
-fun AutoCard(carro: Carro, index: Int, navController: NavController) {
+fun AutoCard(carro: Carro, viewModel: MenuViewModel, index: Int, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,6 +45,7 @@ fun AutoCard(carro: Carro, index: Int, navController: NavController) {
         Column(modifier = Modifier.padding(12.dp)) {
             // Imagen clickable
             Image(
+                // ✅ CORREGIDO: Usando 'carro.imagen' según tu data class.
                 painter = painterResource(id = carro.imagen),
                 contentDescription = carro.nombre,
                 modifier = Modifier
@@ -55,18 +61,63 @@ fun AutoCard(carro: Carro, index: Int, navController: NavController) {
             Text(carro.nombre, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Text(carro.descripcion.take(60) + "...", color = Color.LightGray, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("$${carro.precio}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("$${carro.precio}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+
+                // Botones CRUD
+                Row {
+                    // ✏️ Botón ACTUALIZAR (EDITAR)
+                    IconButton(onClick = {
+                        println("Editando carro ID: ${carro.id}")
+                    }) {
+                        Icon(Icons.Filled.Edit, contentDescription = "Actualizar", tint = Color.Gray)
+                    }
+
+                    // ❌ Botón ELIMINAR
+                    IconButton(onClick = {
+                        viewModel.deleteCarro(carro.id)
+                    }) {
+                        Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                    }
+                }
+            }
         }
     }
 }
 
+// -----------------------------------------------------------------------------------
 @Composable
 fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
     val autos = viewModel.carList
 
     Scaffold(
         bottomBar = { BottomNavBar(navController) },
-        containerColor = Color.Black
+        containerColor = Color.Black,
+
+        // ➕ Botón Flotante para AGREGAR (CREATE)
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    val newCar = Carro(
+                        id = 0,
+                        nombre = "Nuevo Auto",
+                        descripcion = "Auto agregado por CRUD.",
+                        precio = 99999.00,
+                        // ✅ CORREGIDO: Usando 'imagen' al crear el objeto
+                        imagen = R.drawable.pnn
+                    )
+                    viewModel.addCarro(newCar)
+                },
+                containerColor = Color(0xFF00C853)
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Agregar", tint = Color.White)
+            }
+        }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -94,7 +145,7 @@ fun MenuScreen(viewModel: MenuViewModel, navController: NavController) {
             }
 
             itemsIndexed(autos) { index, carro ->
-                AutoCard(carro = carro, index = index, navController = navController)
+                AutoCard(carro = carro, viewModel = viewModel, index = index, navController = navController)
             }
         }
     }
